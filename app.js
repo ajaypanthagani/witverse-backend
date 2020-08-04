@@ -3,9 +3,30 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var config = require('./config');
+
+var mongoose = require('mongoose');
 
 /*routers*/
 var usersRouter = require('./routes/users');
+
+/*connecting database*/
+mongoose.connect(config.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true})
+.then(
+  (database)=>{
+
+    console.log('connected to database');
+
+  }
+)
+.catch(
+  (error)=>{
+
+    console.log(`cannot connect to database: ${error.message}`);
+    process.exit();
+
+  }
+)
 
 var app = express();
 
