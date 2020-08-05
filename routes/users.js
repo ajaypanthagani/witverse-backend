@@ -1,21 +1,24 @@
 var express = require('express');
 var router = express.Router();
 var cors = require('./cors');
-var User = require('../models/users');
-
 var authenticate = require('../authenticate');
-const passport = require('passport');
+var passport = require('passport');
+var User = require('../models/users');
+var response = require('../response');
+
 
 /*CRUD routes*/
 
 //grouped resource
 router.route('/')
 .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
-.get(cors.cors, (req, res, next)=>{
+.get(cors.cors, authenticate.verifyUser, (req, res, next)=>{
   
   User.find({})
   .then(
     (users) => {
+
+      users = users.map((user) => response.wrapUser(user, req.user));
 
       return res.status(200).json(users);
 
@@ -29,7 +32,7 @@ router.route('/')
     }
   )
 })
-.post(cors.corsWithOptions, (req,res,next)=>{
+.post(cors.corsWithOptions,  authenticate.verifyUser, (req,res,next)=>{
 
   const userData = req.body;
   
@@ -109,7 +112,7 @@ router.route('/')
 
   }
 })
-.put(cors.corsWithOptions, (req, res, next)=>{
+.put(cors.corsWithOptions,  authenticate.verifyUser, (req, res, next)=>{
 
   const error = new Error(`PUT method is not supported on ${req.originalUrl}`);
   error.status = 400;
@@ -120,9 +123,9 @@ router.route('/')
 
   User.deleteMany({})
   .then(
-    (response) => {
+    (op) => {
 
-      res.status(200).json(response);
+      res.status(200).json(op);
 
     }
   )
@@ -139,7 +142,7 @@ router.route('/')
 //single resource
 router.route('/:id')
 .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
-.get(cors.cors, (req, res, next)=>{
+.get(cors.cors, authenticate.verifyUser, (req, res, next)=>{
 
   const id = req.params.id;
 
@@ -149,7 +152,11 @@ router.route('/:id')
     (user) => {
 
       if(user){
+
+        user = response.wrapUser(user, req.user);
+
         res.status(200).json(user);
+
       }
       else{
 
@@ -169,7 +176,7 @@ router.route('/:id')
     }
   )
 })
-.post(cors.corsWithOptions, (req, res, next)=>{
+.post(cors.corsWithOptions,  authenticate.verifyUser, (req, res, next)=>{
 
   const error = new Error(`POST method is not supported on ${req.originalUrl}`);
   error.status = 400;
@@ -275,9 +282,9 @@ router.route('/:id')
 
     User.findByIdAndDelete(id)
     .then(
-      (response) => {
+      (op) => {
 
-        res.status(200).json(response);
+        res.status(200).json(op);
 
       }
     )

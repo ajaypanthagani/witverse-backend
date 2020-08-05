@@ -39,6 +39,12 @@ const users = new Schema({
 
         type: Schema.Types.ObjectId,
         ref : 'User'
+    }],
+
+    saved : [{
+
+        type: Schema.Types.ObjectId,
+        ref : 'Quote'
     }]
 },
 {
@@ -89,6 +95,15 @@ users.methods.removeFollower = function(id){
     this.followers.remove(id);
 
     return this.save();
+}
+
+users.methods.isSaved = function(id){
+
+    return this.saved.some(function(savedId){
+
+        return savedId.toString() === id.toString();
+
+    });
 }
 
 users.plugin(LocalMongoose);
