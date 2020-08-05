@@ -27,11 +27,69 @@ const users = new Schema({
 
         type : Boolean,
         default : false
-    }
+    },
+
+    following : [{
+
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+
+    followers : [{
+
+        type: Schema.Types.ObjectId,
+        ref : 'User'
+    }]
 },
 {
     timestamps : true
 });
+
+users.methods.follow = function(id){
+
+    if( this.following.indexOf(id) === -1 ){
+
+        this.following.push(id);
+
+    }
+
+    return this.save();
+}
+
+users.methods.unfollow = function(id){
+
+    this.following.remove(id);
+
+    return this.save();
+}
+
+users.methods.isFollowing = function(id){
+
+    return this.following.some(function(followId){
+
+        return followId.toString() === id.toString();
+
+    });
+}
+
+users.methods.addFollower = function(id){
+
+    if( this.followers.indexOf(id) === -1 ){
+
+        this.followers.push(id);
+
+    }
+
+    return this.save();
+
+}
+
+users.methods.removeFollower = function(id){
+
+    this.followers.remove(id);
+
+    return this.save();
+}
 
 users.plugin(LocalMongoose);
 
