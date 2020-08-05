@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var cors = require('./cors');
-var mongoose = require('mongoose');
 var User = require('../models/users');
 
 var authenticate = require('../authenticate');
@@ -63,8 +62,6 @@ router.route('/')
 
             if(error){
 
-              console.log('error on line 57');
-
               return next(error);
 
             }
@@ -73,8 +70,6 @@ router.route('/')
               user.save((error, user)=>{
                 
                 if(error){
-
-                  console.log('error on line 68');
 
                   return next(error);
 
