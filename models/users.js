@@ -21,6 +21,12 @@ const users = new Schema({
 
         type: String,
         default : '/images/profile/default.png'
+    },
+
+    admin : {
+
+        type : Boolean,
+        default : false
     }
 },
 {

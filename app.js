@@ -6,9 +6,11 @@ var logger = require('morgan');
 var config = require('./config');
 
 var mongoose = require('mongoose');
+var passport = require('passport');
 
 /*routers*/
 var usersRouter = require('./routes/users');
+var authRouter = require('./routes/auth');
 
 /*connecting database*/
 mongoose.connect(config.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true})
@@ -30,6 +32,8 @@ mongoose.connect(config.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: t
 
 var app = express();
 
+//initializing passport
+app.use(passport.initialize());
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -39,6 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
