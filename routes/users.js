@@ -1,8 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var cors = require('./cors');
+var mongoose = require('mongoose');
 var User = require('../models/users');
-const { response } = require('express');
+
+var authenticate = require('../authenticate');
+const passport = require('passport');
 
 /*CRUD routes*/
 
@@ -47,27 +50,48 @@ router.route('/')
         }
         else{
 
-          //creating new user
-          const user = new User(userData);
+          //registering user
+          User.register( new User(
+            {
+              username : userData.username, 
+              firstname : userData.firstname, 
+              lastname : userData.lastname
+            }
+          ),
+           
+            userData.password, (error, user) => {
 
-          //saving new user
-          user.save()
-          .then(
-      
-            (user)=>{
-      
-              return res.status(200).json(user);
-      
-            }
-          )
-          .catch(
-      
-            (error) => {
-      
+            if(error){
+
+              console.log('error on line 57');
+
               return next(error);
-      
+
             }
-          )
+            else{
+
+              user.save((error, user)=>{
+                
+                if(error){
+
+                  console.log('error on line 68');
+
+                  return next(error);
+
+                }
+                else{
+
+                  passport.authenticate('local')(req, res, () => {
+
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success: true, status: 'Registered successfully'});
+
+                  });
+                }
+              })
+            }
+          })
 
         }
 
@@ -97,7 +121,7 @@ router.route('/')
   next(error);
 
 })
-.delete(cors.corsWithOptions, (req, res, next)=>{
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next)=>{
 
   User.deleteMany({})
   .then(
@@ -115,7 +139,7 @@ router.route('/')
 
     }
   )
-})
+});
 
 //single resource
 router.route('/:id')
@@ -157,104 +181,128 @@ router.route('/:id')
   next(error);
 
 })
-.put(cors.corsWithOptions, (req, res, next)=>{
+.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next)=>{
 
   const id = req.params.id;
+  const userId = req.user._id.toString();
 
-  User.findById(id)
-  .then(
+  if(id===userId){
 
-    (user) => {
-
-      if(user){
-
-        const userData = req.body;
-
-        user.firstname = userData.firstname ? userData.firstname : user.firstname;
-        user.lastname = userData.lastname ? userData.lastname : user.lastname;
-        user.password = userData.password ? userData.password : user.password;
-
-        User.findOne({'username' : userData.username, '_id' : {$ne : id}})
-        .then(
-          (existingUser) => {
-
-            if(existingUser){
-
-              const error = new Error('Username already exists');
-              error.status = 409;
-              return next(error);
-
-            }
-            else{
-
-              user.username = userData.username ? userData.username : user.username;
-              user.save()
-              .then(
-                (user) => {
-      
-      
-                  return res.status(200).json(user);
-      
-                }
-              )
-              .catch(
-      
-                (error) => {
-      
-                  return next(error);
-      
-                }
-              )
-            }
-          }
-        )
-        .catch(
-
-          (error) => {
-
-            return next(error);
-
-          }
-        )
-
-      }
-      else{
-
-        const error = new Error(`User with id : ${id} doesn't exist`);
-        error.status = 404;
-        return next(error);
+    User.findById(id)
+    .then(
+  
+      (user) => {
+  
+        if(user){
+  
+          const userData = req.body;
+  
+          user.firstname = userData.firstname ? userData.firstname : user.firstname;
+          user.lastname = userData.lastname ? userData.lastname : user.lastname;
+  
+          User.findOne({'username' : userData.username, '_id' : {$ne : id}})
+          .then(
+            (existingUser) => {
+  
+              if(existingUser){
+  
+                const error = new Error('Username already exists');
+                error.status = 409;
+                return next(error);
+  
+              }
+              else{
+  
+                user.username = userData.username ? userData.username : user.username;
+                user.save()
+                .then(
+                  (user) => {
         
+        
+                    return res.status(200).json(user);
+        
+                  }
+                )
+                .catch(
+        
+                  (error) => {
+        
+                    return next(error);
+        
+                  }
+                )
+              }
+            }
+          )
+          .catch(
+  
+            (error) => {
+  
+              return next(error);
+  
+            }
+          )
+  
+        }
+        else{
+  
+          const error = new Error(`User with id : ${id} doesn't exist`);
+          error.status = 404;
+          return next(error);
+          
+        }
       }
-    }
-  )
-  .catch(
+    )
+    .catch(
+  
+      (error) => {
+  
+        return next(error);
+  
+      }
+    )
+  }
+  else{
 
-    (error) => {
+    const error = new Error('Your are not authorized to perform this operation!');
+    error.status = 403;
+    return next(error);
 
-      return next(error);
+  }
 
-    }
-  )
 })
-.delete(cors.corsWithOptions, (req, res, next)=>{
+.delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next)=>{
 
   const id = req.params.id;
+  const userId = req.user._id.toString()
 
-  User.findByIdAndDelete(id)
-  .then(
-    (response) => {
+  if(id===userId){
 
-      res.status(200).json(response);
+    User.findByIdAndDelete(id)
+    .then(
+      (response) => {
 
-    }
-  )
-  .catch(
-    (error) => {
+        res.status(200).json(response);
 
-      return next(error);
+      }
+    )
+    .catch(
+      (error) => {
 
-    }
-  )
-})
+        return next(error);
+
+      }
+    );
+
+  }
+  else{
+
+    const error = new Error('Your are not authorized to perform this operation!');
+    error.status = 403;
+    return next(error);
+
+  }
+  
+});
 
 module.exports = router;
