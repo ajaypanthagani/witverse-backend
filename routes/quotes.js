@@ -5,8 +5,7 @@ const authenticate = require('../authenticate');
 
 const Quote = require('../models/quotes');
 const response = require('../response');
-const quoteModel = require('../models/quotes');
-const { deleteOne } = require('../models/quotes');
+
 
 
 router.route('/')
