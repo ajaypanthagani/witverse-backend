@@ -14,6 +14,7 @@ var authRouter = require('./routes/auth');
 var uploadRouter = require('./routes/upload');
 var connectionsRouter = require('./routes/connections');
 var quotesRouter = require('./routes/quotes');
+var actionsRouter = require('./routes/actions');
 
 /*connecting database*/
 mongoose.connect(config.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true})
@@ -50,6 +51,7 @@ app.use('/auth', authRouter);
 app.use('/upload', uploadRouter);
 app.use('/connections', connectionsRouter);
 app.use('/quotes', quotesRouter);
+app.use('/actions', actionsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
