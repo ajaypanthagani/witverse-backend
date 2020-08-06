@@ -14,6 +14,7 @@ var authRouter = require('./routes/auth');
 var uploadRouter = require('./routes/upload');
 var connectionsRouter = require('./routes/connections');
 var quotesRouter = require('./routes/quotes');
+var commentsRouter = require('./routes/comments');
 var actionsRouter = require('./routes/actions');
 
 /*connecting database*/
@@ -51,6 +52,7 @@ app.use('/auth', authRouter);
 app.use('/upload', uploadRouter);
 app.use('/connections', connectionsRouter);
 app.use('/quotes', quotesRouter);
+app.use('/comments', commentsRouter);
 app.use('/actions', actionsRouter);
 
 // catch 404 and forward to error handler

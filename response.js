@@ -32,3 +32,15 @@ exports.wrapQuote = (requestedQuote, requestingUser) => {
         isSaved : requestingUser.isSaved(requestedQuote._id)
     };
 }
+
+exports.wrapComment = (requestedComment, requestingUser) => {
+
+    return {
+
+        _id : requestedComment._id,
+        text : requestedComment.text,
+        author : requestedComment.author,
+        likes : requestedComment.likes,
+        isLiked : requestedComment.isLiked(requestingUser._id)
+    };
+}

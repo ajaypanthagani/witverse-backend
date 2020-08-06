@@ -23,7 +23,7 @@ const Comment = new Schema({
     }
 })
 
-Comment.methods.like = function(userId){
+Comment.methods.like = function(userId, parent){
 
     if( this.likes.indexOf(userId) === -1 ){
 
@@ -31,14 +31,14 @@ Comment.methods.like = function(userId){
 
     }
 
-    return this.save();
+    return parent.save();
 }
 
-Comment.methods.unlike = function(userId){
+Comment.methods.unlike = function(userId, parent){
 
     this.likes.remove(userId);
 
-    return this.save();
+    return parent.save();
 }
 
 Comment.methods.isLiked = function(userId){
