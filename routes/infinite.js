@@ -1,8 +1,10 @@
 const express = require('express')
 const router =  express.Router();
-const cors = require('./cors');
 const mongoose = require('mongoose');
+
 const authenticate = require('../authenticate');
+const cors = require('./cors');
+const response = require('../response');
 
 //models
 const Quote = require('../models/quotes');
@@ -16,7 +18,9 @@ router.route('/quotes/:limit')
 
     try {
 
-        const quotes = await Quote.find({ 'author' : { $in : req.user.following } }).populate('author').limit(limit);
+        let quotes = await Quote.find({ 'author' : { $in : req.user.following } }).populate('author').limit(limit);
+
+        quotes = quotes.map( (quote) => response.wrapQuote(quote, req.user) );
 
         return res.status(200).json(quotes);
 
@@ -37,7 +41,9 @@ router.route('/quotes/:startingId/:limit')
 
     try {
         
-        const quotes = await Quote.find({ '_id' : {$gt : startingId}, 'author' : { $in : req.user.following } }).populate('author').limit(limit);
+        let quotes = await Quote.find({ '_id' : {$gt : startingId}, 'author' : { $in : req.user.following } }).populate('author').limit(limit);
+
+        quotes = quotes.map( (quote) => response.wrapQuote(quote, req.user) );
 
         return res.status(200).json(quotes);
 
@@ -54,7 +60,9 @@ router.route('/users/:limit')
 
     try {
         
-        const users = await User.find().limit(limit);
+        let users = await User.find().limit(limit);
+
+        users = users.map( (user) => response.wrapUser(user, req.user) );
 
         return res.status(200).json(users);
 
@@ -74,7 +82,9 @@ router.route('/users/:startingId/:limit')
 
     try {
         
-        const users = await User.find({_id : {$gt : startingId}}).limit(limit);
+        let users = await User.find({_id : {$gt : startingId}}).limit(limit);
+
+        users = users.map( (user) => response.wrapUser(user, req.user) );
 
         return res.status(200).json(users);
 

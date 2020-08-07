@@ -51,6 +51,8 @@ const users = new Schema({
     timestamps : true
 });
 
+
+//follow method for users
 users.methods.follow = function(id){
 
     if( this.following.indexOf(id) === -1 ){
@@ -62,6 +64,8 @@ users.methods.follow = function(id){
     return this.save();
 }
 
+
+//unfollow method for user
 users.methods.unfollow = function(id){
 
     this.following.remove(id);
@@ -69,6 +73,8 @@ users.methods.unfollow = function(id){
     return this.save();
 }
 
+
+//check if the user is already followed or not
 users.methods.isFollowing = function(id){
 
     return this.following.some(function(followId){
@@ -78,6 +84,8 @@ users.methods.isFollowing = function(id){
     });
 }
 
+
+//method to add a follower
 users.methods.addFollower = function(id){
 
     if( this.followers.indexOf(id) === -1 ){
@@ -90,6 +98,7 @@ users.methods.addFollower = function(id){
 
 }
 
+//method to remove a follower
 users.methods.removeFollower = function(id){
 
     this.followers.remove(id);
@@ -97,6 +106,7 @@ users.methods.removeFollower = function(id){
     return this.save();
 }
 
+//method to add a quote to saved array
 users.methods.saveQuote = function(id){
 
     if( this.saved.indexOf(id) === -1 ){
@@ -109,6 +119,7 @@ users.methods.saveQuote = function(id){
 
 }
 
+//method to remove a quote from saved array
 users.methods.unsaveQuote = function(id){
 
     this.saved.remove(id);
@@ -116,6 +127,7 @@ users.methods.unsaveQuote = function(id){
     return this.save();
 }
 
+//method to check if the quote is already saved or not
 users.methods.isSaved = function(id){
 
     return this.saved.some(function(savedId){

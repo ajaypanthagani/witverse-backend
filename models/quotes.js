@@ -23,6 +23,7 @@ const Comment = new Schema({
     }
 })
 
+//like method for commment
 Comment.methods.like = function(userId, parent){
 
     if( this.likes.indexOf(userId) === -1 ){
@@ -34,6 +35,7 @@ Comment.methods.like = function(userId, parent){
     return parent.save();
 }
 
+//unlike method for comment
 Comment.methods.unlike = function(userId, parent){
 
     this.likes.remove(userId);
@@ -41,6 +43,7 @@ Comment.methods.unlike = function(userId, parent){
     return parent.save();
 }
 
+//method to check if the comment is already liked or not
 Comment.methods.isLiked = function(userId){
 
     return this.likes.some(function(followId){
@@ -50,6 +53,7 @@ Comment.methods.isLiked = function(userId){
     });
 }
 
+//quote schema
 const Quote = new Schema({
 
     text : {
@@ -82,6 +86,7 @@ const Quote = new Schema({
     comments : [Comment]
 });
 
+//like method for quote
 Quote.methods.like = function(userId){
 
     if( this.likes.indexOf(userId) === -1 ){
@@ -93,6 +98,7 @@ Quote.methods.like = function(userId){
     return this.save();
 }
 
+//unlike method for quote
 Quote.methods.unlike = function(userId){
 
     this.likes.remove(userId);
@@ -100,6 +106,8 @@ Quote.methods.unlike = function(userId){
     return this.save();
 }
 
+
+//method to check if the quote is already liked or not
 Quote.methods.isLiked = function(userId){
 
     return this.likes.some(function(followId){
