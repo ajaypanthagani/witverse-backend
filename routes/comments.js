@@ -178,13 +178,22 @@ router.route('/:quoteId/:commentId')
 
             if(comment){
 
-                quote.comments.id(commentId).text = req.body.text ? req.body.text : quote.comments.id(commentId).text;
+                if(req.user._id === comment.author){
 
-                await quote.save();
+                    quote.comments.id(commentId).text = req.body.text ? req.body.text : quote.comments.id(commentId).text;
 
-                const wrappedComment = response.wrapComment(quote.comments.id(commentId), req.user);
-
-                return res.status(200).json(wrappedComment);
+                    await quote.save();
+    
+                    const wrappedComment = response.wrapComment(quote.comments.id(commentId), req.user);
+    
+                    return res.status(200).json(wrappedComment);
+                }
+                else{
+                    
+                    const error = new Error(`you are not authorized to do that`);
+                    error.status = 403;
+                    return next(error);
+                }
 
             }
             else{
@@ -223,12 +232,23 @@ router.route('/:quoteId/:commentId')
 
             if(comment){
 
-                quote.comments = quote.comments.filter( (comment) => comment._id.toString() !== commentId);
+                if( req.user._id === comment.author ){
 
-                await quote.save();
+                    quote.comments = quote.comments.filter( (comment) => comment._id.toString() !== commentId);
 
-                res.status(200).json({success : true, message : 'comment deleted successfully'});
+                    await quote.save();
+    
+                    res.status(200).json({success : true, message : 'comment deleted successfully'});
 
+                }
+                else{
+
+                    const error = new Error(`you are not authorized to do that`);
+                    error.status = 403;
+                    return next(error);
+                    
+                }
+                
             }
             else{
                 
