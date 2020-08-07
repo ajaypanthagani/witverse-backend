@@ -62,7 +62,7 @@ router.route('/like/quote/:id')
 })
 .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next)=>{
 
-    const error = new Error(`POST method is not supported on ${req.originalUrl}`);
+    const error = new Error(`PUT method is not supported on ${req.originalUrl}`);
     error.status = 400;
     return next(error);
 })
@@ -171,7 +171,7 @@ router.route('/like/quote/:quoteId/comment/:commentId')
 })
 .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next)=>{
 
-    const error = new Error(`POST method is not supported on ${req.originalUrl}`);
+    const error = new Error(`PUT method is not supported on ${req.originalUrl}`);
     error.status = 400;
     return next(error);
 })
@@ -210,6 +210,102 @@ router.route('/like/quote/:quoteId/comment/:commentId')
 
         return next(error);
 
+    }
+})
+
+
+router.route('/save/quotes')
+.options(cors.corsWithOptions, (req, res)=>res.sendStatus(200))
+.get(cors.cors, authenticate.verifyUser, async (req, res, next)=>{
+
+    const user = req.user;
+
+    try {
+
+        const saved = await (user.populate('saved')).saved;
+        return res.status(200).json(saved);
+
+    } catch (error) {
+        return next(error);
+    }
+
+})
+.post(cors.corsWithOptions, authenticate.verifyUser, async (req, res, next)=>{
+    
+    const user = req.user;
+    const quoteId = req.body.quoteId;
+
+    try {
+        
+        const saved = await user.saveQuote(quoteId);
+
+        return res.status(200).json({success : true, message: 'saved successfully'});
+
+    } catch (error) {
+        
+        return next(error);
+    }
+})
+.put(cors.corsWithOptions, authenticate.verifyUser, async (req, res, next)=>{
+
+    const error = new Error(`PUT method is not supported on ${req.originalUrl}`);
+    error.status = 400;
+    return next(error);
+
+})
+.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, async (req, res, next)=>{
+
+    const user = req.user;
+
+    try {
+        
+        user.saved = [];
+        await user.save();
+        return res.status(200).json({success : true, message : 'deleted successfully'});
+
+    } catch (error) {
+        
+        return next(error);
+    }
+});
+
+router.route('/save/quotes/:quoteId')
+.options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+.get(cors.cors, authenticate.verifyUser, async (req, res, next)=>{
+
+    const error = new Error(`GET method is not supported on ${req.originalUrl}`);
+    error.status = 400;
+    return next(error);
+
+})
+.post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next)=>{
+
+    const error = new Error(`POST method is not supported on ${req.originalUrl}`);
+    error.status = 400;
+    return next(error);
+
+})
+.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next)=>{
+
+    const error = new Error(`PUT method is not supported on ${req.originalUrl}`);
+    error.status = 400;
+    return next(error);
+
+})
+.delete(cors.corsWithOptions, authenticate.verifyUser, async (req, res, next)=>{
+
+    const user = req.user;
+    const quoteId = req.params.quoteId;
+
+    try {
+        
+        await user.unsaveQuote(quoteId);
+
+        return res.status(200).json({success : true, message : 'deleted successfully'});
+
+    } catch (error) {
+        
+        return next(error);
     }
 })
 

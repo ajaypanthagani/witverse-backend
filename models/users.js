@@ -97,6 +97,25 @@ users.methods.removeFollower = function(id){
     return this.save();
 }
 
+users.methods.saveQuote = function(id){
+
+    if( this.saved.indexOf(id) === -1 ){
+
+        this.saved.push(id);
+
+    }
+
+    return this.save();
+
+}
+
+users.methods.unsaveQuote = function(id){
+
+    this.saved.remove(id);
+
+    return this.save();
+}
+
 users.methods.isSaved = function(id){
 
     return this.saved.some(function(savedId){
