@@ -17,6 +17,7 @@ var quotesRouter = require('./routes/quotes');
 var commentsRouter = require('./routes/comments');
 var actionsRouter = require('./routes/actions');
 var guestRouter = require('./routes/guest');
+var infiniteRouter = require('./routes/infinite');
 
 /*connecting database*/
 mongoose.connect(config.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true})
@@ -56,6 +57,7 @@ app.use('/quotes', quotesRouter);
 app.use('/comments', commentsRouter);
 app.use('/actions', actionsRouter);
 app.use('/guest', guestRouter);
+app.use('/infinite', infiniteRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
