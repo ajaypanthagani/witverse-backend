@@ -9,12 +9,15 @@ const response = require('../response');
 
 
 router.route('/')
-.options(cors.corsWithOptions, (req, res)=> res.sendStatus(200) )
+.options(cors.corsWithOptions, (req, res)=> res.sendStatus(200))
 .get(cors.cors, authenticate.verifyUser, async (req, res, next)=>{
 
     try {
 
-        let quotes = await Quote.find({}).populate('author');
+        //creating a variable to store query parameters
+        const queryParams = req.query;
+
+        let quotes = await Quote.find(queryParams).populate('author');
 
         quotes = quotes.map( (quote) => response.wrapQuote(quote, req.user) );
 
