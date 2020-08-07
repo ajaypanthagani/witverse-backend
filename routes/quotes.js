@@ -14,7 +14,7 @@ router.route('/')
 
     try {
 
-        let quotes = await Quote.find({});
+        let quotes = await Quote.find({}).populate('author');
 
         quotes = quotes.map( (quote) => response.wrapQuote(quote, req.user) );
 
@@ -84,7 +84,7 @@ router.route('/:id')
 
     try {
         
-        let quote = await Quote.findById(id);
+        let quote = await Quote.findById(id).populate('author');
 
         quote = response.wrapQuote(quote, req.user);
 
