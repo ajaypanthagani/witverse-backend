@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const LocalMongoose = require('passport-local-mongoose');
 
 
-const users = new Schema({
+const User = new Schema({
 
     firstname : {
 
@@ -52,8 +52,8 @@ const users = new Schema({
 });
 
 
-//follow method for users
-users.methods.follow = function(id){
+//follow method for User
+User.methods.follow = function(id){
 
     if( this.following.indexOf(id) === -1 ){
 
@@ -66,7 +66,7 @@ users.methods.follow = function(id){
 
 
 //unfollow method for user
-users.methods.unfollow = function(id){
+User.methods.unfollow = function(id){
 
     this.following.remove(id);
 
@@ -75,7 +75,7 @@ users.methods.unfollow = function(id){
 
 
 //check if the user is already followed or not
-users.methods.isFollowing = function(id){
+User.methods.isFollowing = function(id){
 
     return this.following.some(function(followId){
 
@@ -86,7 +86,7 @@ users.methods.isFollowing = function(id){
 
 
 //method to add a follower
-users.methods.addFollower = function(id){
+User.methods.addFollower = function(id){
 
     if( this.followers.indexOf(id) === -1 ){
 
@@ -99,7 +99,7 @@ users.methods.addFollower = function(id){
 }
 
 //method to remove a follower
-users.methods.removeFollower = function(id){
+User.methods.removeFollower = function(id){
 
     this.followers.remove(id);
 
@@ -107,7 +107,7 @@ users.methods.removeFollower = function(id){
 }
 
 //method to add a quote to saved array
-users.methods.saveQuote = function(id){
+User.methods.saveQuote = function(id){
 
     if( this.saved.indexOf(id) === -1 ){
 
@@ -120,7 +120,7 @@ users.methods.saveQuote = function(id){
 }
 
 //method to remove a quote from saved array
-users.methods.unsaveQuote = function(id){
+User.methods.unsaveQuote = function(id){
 
     this.saved.remove(id);
 
@@ -128,7 +128,7 @@ users.methods.unsaveQuote = function(id){
 }
 
 //method to check if the quote is already saved or not
-users.methods.isSaved = function(id){
+User.methods.isSaved = function(id){
 
     return this.saved.some(function(savedId){
 
@@ -137,8 +137,10 @@ users.methods.isSaved = function(id){
     });
 }
 
-users.plugin(LocalMongoose);
+User.plugin(LocalMongoose);
 
-const userModel = mongoose.model('User', users);
+User.index({'$**': 'text'});
+
+const userModel = mongoose.model('User', User);
 
 module.exports = userModel;

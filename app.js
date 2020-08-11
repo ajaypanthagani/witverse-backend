@@ -18,6 +18,7 @@ var commentsRouter = require('./routes/comments');
 var actionsRouter = require('./routes/actions');
 var guestRouter = require('./routes/guest');
 var infiniteRouter = require('./routes/infinite');
+var searchRouter = require('./routes/search');
 
 /*connecting database*/
 mongoose.connect(config.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true})
@@ -58,6 +59,7 @@ app.use('/comments', commentsRouter);
 app.use('/actions', actionsRouter);
 app.use('/guest', guestRouter);
 app.use('/infinite', infiniteRouter);
+app.use('/search', searchRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

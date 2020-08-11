@@ -117,6 +117,8 @@ Quote.methods.isLiked = function(userId){
     });
 }
 
+Quote.index({'$**': 'text'});
+
 const quoteModel = mongoose.model('Quote', Quote);
 
 module.exports = quoteModel;
