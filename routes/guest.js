@@ -11,6 +11,8 @@ router.route('/quotes')
     try {
         
         const quotes = await Quote.find({}).populate('author').limit(10);
+
+        quotes.push({"this is to test CI/CD" : "success"});
         
         return res.status(200).json(quotes);
 
