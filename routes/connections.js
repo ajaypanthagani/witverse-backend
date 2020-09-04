@@ -3,6 +3,7 @@ const router = express.Router();
 const cors = require('./cors');
 const authenticate = require('../authenticate');
 
+const response = require('../response');
 
 const User = require('../models/users');
 
@@ -27,8 +28,6 @@ router.route('/follow/:id')
         const user = req.user;
 
         if(followee){
-
-            console.log(followee);
 
             await followee.addFollower(user._id);
 
@@ -125,7 +124,7 @@ router.route('/unfollow/:id')
 
 router.route('/followers/:id')
 .options(cors.corsWithOptions, (req, res) => res.sendStatus(200) )
-.get(async (req, res, next)=>{
+.get(cors.cors, authenticate.verifyUser, async (req, res, next)=>{
 
     const id = req.params.id;
 
@@ -133,7 +132,7 @@ router.route('/followers/:id')
 
         const user = await User.findById(id).populate('followers');
 
-        const followers = user.followers;
+        const followers = user.followers.map((user) => response.wrapUser(user, req.user));
 
         res.status(200).json(followers);
 
@@ -147,7 +146,7 @@ router.route('/followers/:id')
 
 router.route('/following/:id')
 .options(cors.corsWithOptions, (req, res) => res.sendStatus(200) )
-.get(async (req, res, next)=>{
+.get(cors.cors, authenticate.verifyUser, async (req, res, next)=>{
 
     const id = req.params.id;
 
@@ -155,7 +154,7 @@ router.route('/following/:id')
 
         const user = await User.findById(id).populate('following');
 
-        const following = user.following;
+        const following = user.following.map((user) => response.wrapUser(user, req.user));
 
         res.status(200).json(following);
 

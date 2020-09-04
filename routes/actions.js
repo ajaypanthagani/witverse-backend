@@ -15,11 +15,11 @@ router.route('/like/quote/:id')
     const id = req.params.id;
 
     try {
-        const quote = await Quote.findById(id).populate('comments.likes');
+        const quote = await Quote.findById(id).populate('likes');
 
         if(quote){
 
-            const likes = quote.likes;
+            const likes = quote.likes.map((like) => response.wrapUser(like, req.user));
 
             res.status(200).json(likes);
         }
@@ -40,12 +40,12 @@ router.route('/like/quote/:id')
     const id = req.params.id;
 
     try {
-        const quote = await Quote.findById(id);
+        const quote = await Quote.findById(id).populate('author');
         if(quote){
 
-            await quote.like(req.user._id);
+            const likedQuote = await quote.like(req.user._id);
 
-            res.status(200).json({success : true, message : 'liked succesfully'});
+            res.status(200).json(response.wrapQuote(likedQuote, req.user));
         }
         else{
 
@@ -71,12 +71,12 @@ router.route('/like/quote/:id')
     const id = req.params.id;
 
     try {
-        const quote = await Quote.findById(id);
+        const quote = await Quote.findById(id).populate('author');
         if(quote){
 
-            await quote.unlike(req.user._id);
+            const unLikedQuote = await quote.unlike(req.user._id);
 
-            res.status(200).json({success : true, message : 'unliked succesfully'});
+            res.status(200).json(response.wrapQuote(unLikedQuote, req.user));
         }
         else{
 
@@ -137,7 +137,7 @@ router.route('/like/quote/:quoteId/comment/:commentId')
     const commentId = req.params.commentId;
 
     try {
-        const quote = await Quote.findById(quoteId);
+        const quote = await Quote.findById(quoteId).populate('comments.author');
         if(quote){
 
             const comment = quote.comments.find((comment) => comment._id.toString() === commentId)
@@ -146,7 +146,9 @@ router.route('/like/quote/:quoteId/comment/:commentId')
 
                 await comment.like(req.user, quote);
 
-                return res.status(200).json({success : true, message : 'comment liked successfully'});
+                const likedComment = quote.comments.find((comment) => comment._id.toString() === commentId);
+
+                return res.status(200).json(response.wrapComment(likedComment, req.user));
             }
             else{
                 
@@ -190,7 +192,9 @@ router.route('/like/quote/:quoteId/comment/:commentId')
 
                 await comment.unlike(req.user, quote);
 
-                return res.status(200).json({success: true, message : 'comment unliked successfully!'});
+                const unLikedComment = quote.comments.find((comment) => comment._id.toString() === commentId);
+
+                return res.status(200).json(response.wrapComment(unLikedComment, req.user));
             }
             else{
                 
@@ -237,9 +241,11 @@ router.route('/save/quotes')
 
     try {
         
-        const saved = await user.saveQuote(quoteId);
+        await user.saveQuote(quoteId);
 
-        return res.status(200).json({success : true, message: 'saved successfully'});
+        const savedQuote = await Quote.findById(quoteId).populate('author');
+
+        return res.status(200).json(response.wrapQuote(savedQuote, req.user));
 
     } catch (error) {
         
@@ -260,8 +266,8 @@ router.route('/save/quotes')
     try {
         
         user.saved = [];
-        await user.save();
-        return res.status(200).json({success : true, message : 'deleted successfully'});
+        const unsaved = await user.save();
+        return res.status(200).json(unsaved);
 
     } catch (error) {
         
@@ -301,7 +307,11 @@ router.route('/save/quotes/:quoteId')
         
         await user.unsaveQuote(quoteId);
 
-        return res.status(200).json({success : true, message : 'deleted successfully'});
+        const unsavedQuote = await Quote.findById(quoteId);
+
+
+
+        return res.status(200).json(response.wrapQuote(unsavedQuote, req.user));
 
     } catch (error) {
         
@@ -309,4 +319,24 @@ router.route('/save/quotes/:quoteId')
     }
 })
 
+
+router.route('/saved/by/:userId')
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200) })
+.get(cors.cors, authenticate.verifyUser, async (req, res, next) => {
+
+    try{
+
+        const user = await (User.findById(req.params.userId)).populate('saved');
+
+        await user.populate('saved.author').execPopulate();
+
+        const saved = user.saved.map( (quote) => response.wrapQuote(quote, req.user) );
+
+        res.status(200).json(saved);
+    }
+    catch(error){
+
+        next(error);
+    }
+})
 module.exports = router;

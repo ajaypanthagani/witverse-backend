@@ -4,6 +4,7 @@ const fs = require('fs');
 const uuid = require('uuid');
 const authenticate = require('../authenticate');
 const multer = require('multer');
+const response = require('../response');
 
 const storage = multer.diskStorage({
     destination: (req,file,cb)=>{
@@ -11,6 +12,11 @@ const storage = multer.diskStorage({
     },
     
     filename: (req, file, cb)=>{
+
+        // const uniqueName = (uuid.v4()).toString().replace("-", "");
+
+        // console.log(uniqueName);
+
         cb(null, uuid.v4() + path.extname(file.originalname));
     }
 });
@@ -42,14 +48,20 @@ uploadRouter.route('/displayImage')
 
     const user = req.user;
 
-    user.displayImage = path.join('/images/profile', req.file.filename);
+    console.log(req.file);
+
+    const imageURL = path.join('/images/profile', req.file.filename);
+
+    const correctURL = imageURL.replace(/\\/g, "/");
+
+    user.displayImage = correctURL;
 
     user.save()
     .then(
 
         (user) => {
 
-            return res.status(200).json(user);
+            return res.status(200).json(response.wrapUser(user, req.user));
         }
     )
     .catch(

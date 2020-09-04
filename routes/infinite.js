@@ -18,7 +18,13 @@ router.route('/quotes/:limit')
 
     try {
 
-        let quotes = await Quote.find({ 'author' : { $in : req.user.following } }).populate('author').limit(limit);
+        console.log(typeof req.user._id);
+
+        const authorIds = req.user.following.concat(req.user._id);
+
+        console.log(authorIds);
+
+        let quotes = await Quote.find({ 'author' : { $in : authorIds } }).sort({'_id' : -1}).populate('author').limit(limit);
 
         quotes = quotes.map( (quote) => response.wrapQuote(quote, req.user) );
 
@@ -34,14 +40,19 @@ router.route('/quotes/:startingId/:limit')
 .options(cors.corsWithOptions, ( req, res)=> res.sendStatus(200))
 .get(cors.corsWithOptions, authenticate.verifyUser, async (req, res, next)=>{
 
+    console.log(req.params.limit);
+    console.log(req.params.startingId);
+
     //typecasting string to mongoose object id
     const startingId = mongoose.Types.ObjectId(req.params.startingId);
 
     const limit = parseInt(req.params.limit);
 
     try {
+
+        const authorIds = req.user.following.concat(req.user._id);
         
-        let quotes = await Quote.find({ '_id' : {$gt : startingId}, 'author' : { $in : req.user.following } }).populate('author').limit(limit);
+        let quotes = await Quote.find({ '_id' : {$lt : startingId}, 'author' : { $in : authorIds }}).sort({'_id' : -1}).populate('author').limit(limit);
 
         quotes = quotes.map( (quote) => response.wrapQuote(quote, req.user) );
 

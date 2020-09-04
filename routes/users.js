@@ -32,7 +32,7 @@ router.route('/')
     }
   )
 })
-.post(cors.corsWithOptions,  authenticate.verifyUser, (req,res,next)=>{
+.post(cors.corsWithOptions, (req,res,next)=>{
 
   const userData = req.body;
   
@@ -221,7 +221,7 @@ router.route('/:id')
                   (user) => {
         
         
-                    return res.status(200).json(user);
+                    return res.status(200).json(response.wrapUser( user, req.user ));
         
                   }
                 )
@@ -306,5 +306,24 @@ router.route('/:id')
   }
   
 });
+
+router.route('/random/:size')
+.options(cors.corsWithOptions, (req, res)=>res.sendStatus(200))
+.get(cors.cors, authenticate.verifyUser, async (req, res, next)=>{
+
+  const numOfUsers = parseInt(req.params.size);
+
+  const followingUsers = req.user.following.concat(req.user._id);
+
+  const suggestions = await User.aggregate([
+
+    { $match: {'_id': { $nin: followingUsers } } },
+
+    { $sample : {size : numOfUsers } }
+
+  ]);
+
+  return res.status(200).json(suggestions);
+})
 
 module.exports = router;

@@ -137,6 +137,11 @@ User.methods.isSaved = function(id){
     });
 }
 
+User.methods.isMe = function(userId){
+
+    return this._id.equals(userId);
+}
+
 User.plugin(LocalMongoose);
 
 User.index({'$**': 'text'});

@@ -41,7 +41,11 @@ router.route('/')
 
             const quote = await newQuote.save();
 
-            return res.status(200).json(quote);
+            await quote.populate('author').execPopulate();
+
+            const createdQuote = response.wrapQuote(quote, req.user);
+
+            return res.status(200).json(createdQuote);
         }
         else{
 
@@ -110,9 +114,9 @@ router.route('/:id')
 
     try {
         
-        const quote = await quote.findById(id);
+        const quote = await Quote.findById(id).populate('author');
 
-        if(quote.author === req.user._id){
+        if(quote.author.equals(req.user._id)){
 
             const quoteData = req.body;
             quote.text = quoteData.text ? quoteData.text : quote.text;
@@ -145,12 +149,11 @@ router.route('/:id')
 
         const quote = await Quote.findById(id);
 
-        if(quote.author === req.user._id){
+        if( quote.author.equals(req.user._id)){
 
-            let deletedQuote = Quote.findByIdAndDelete(id);
-            deletedQuote = response.wrapQuote(deletedQuote);
-
-            return res.status(200).json(deletedQuote);
+            const op = await Quote.findByIdAndDelete(id);
+            
+            return res.status(200).send(op);
         }
         else{
 
@@ -163,5 +166,26 @@ router.route('/:id')
         return next(error);
     }
 });
+
+router.route('/by/:userId')
+.options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+.get(cors.cors, authenticate.verifyUser, async (req, res, next) => {
+
+    try{
+
+        const userId = req.params.userId;
+
+        const quotes = await Quote.find({'author' : userId}).populate('author');
+
+        const wrapped = quotes.map((quote) => response.wrapQuote(quote, req.user));
+
+        res.status(200).json(wrapped);
+    }
+    catch(error){
+
+        next(error);
+    }
+
+})
 
 module.exports = router;

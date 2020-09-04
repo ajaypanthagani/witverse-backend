@@ -4,6 +4,8 @@ const cors = require('./cors');
 const passport = require('passport');
 const authenticate = require('../authenticate');
 
+const response = require('../response');
+
 const User = require('../models/users');
 
 
@@ -45,7 +47,9 @@ router.route('/user')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200) })
 .get(cors.cors, authenticate.verifyUser, async (req, res, next)=>{
 
-    const user = req.user;
+    const user = response.wrapUser(req.user, req.user);
+
+    console.log(user);
 
     return res.status(200).json(user);
     
@@ -85,6 +89,8 @@ router.route('/reset-password')
 })
 .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
 
+    console.log('reset password');
+    
     const passwords = req.body;
 
     if(passwords.oldPassword && passwords.newPassword){

@@ -55,9 +55,27 @@ router.route('/:quoteId')
 
                 quote.comments.push(commentData);
 
-                const updatedQuote = await quote.save();
+                await quote.save();
 
-                res.status(200).json(updatedQuote);
+                const populatedQuote = await quote.populate({ 
+                                 path: 'comments',
+                                 populate: {
+                                   path: 'author',
+                                   model: 'User'
+                                 } 
+                              })
+                              .execPopulate();
+
+                const comments = populatedQuote.comments.map((comment) => response.wrapComment(comment, req.user));
+
+
+                res.status(200).json(comments);
+            }
+            else{
+
+                const error = new Error("comment is required");
+                error.status = 400;
+                next(error);
             }
         }
         else{
@@ -232,7 +250,7 @@ router.route('/:quoteId/:commentId')
 
             if(comment){
 
-                if( req.user._id === comment.author ){
+                if( req.user._id.equals(comment.author._id) ){
 
                     quote.comments = quote.comments.filter( (comment) => comment._id.toString() !== commentId);
 

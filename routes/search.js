@@ -17,7 +17,7 @@ router.route('/quotes')
 
         const searchFor = req.query.searchFor || '';
 
-        let results = await Quote.find({$text : { $search : searchFor }});
+        let results = await Quote.find({$text : { $search : searchFor }}).populate('author');
 
         results = results.map( (result) => response.wrapQuote(result, req.user) );
     

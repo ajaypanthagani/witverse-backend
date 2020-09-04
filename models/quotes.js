@@ -53,6 +53,11 @@ Comment.methods.isLiked = function(userId){
     });
 }
 
+Comment.methods.isOwned = function(userId){
+
+    return this.author.equals(userId);
+}
+
 //quote schema
 const Quote = new Schema({
 
@@ -116,6 +121,12 @@ Quote.methods.isLiked = function(userId){
 
     });
 }
+
+Quote.methods.isOwned = function(userId){
+
+    return this.author._id.toString() === userId.toString();
+}
+
 
 Quote.index({'$**': 'text'});
 

@@ -13,7 +13,8 @@ exports.wrapUser = (requestedUser, requestingUser) => {
         followers : requestedUser.followers,
         createdAt : requestedUser.createdAt,
         updatedAt : requestedUser.updatedAt,
-        isFollowed : requestingUser.isFollowing(requestedUser._id)
+        isFollowed : requestingUser.isFollowing(requestedUser._id),
+        isMe : requestedUser.isMe(requestingUser._id)
     };
 }
 
@@ -29,7 +30,8 @@ exports.wrapQuote = (requestedQuote, requestingUser) => {
         likes : requestedQuote.likes,
         comments : requestedQuote.comments,
         isLiked : requestedQuote.isLiked(requestingUser._id),
-        isSaved : requestingUser.isSaved(requestedQuote._id)
+        isSaved : requestingUser.isSaved(requestedQuote._id),
+        isOwned : requestedQuote.isOwned(requestingUser._id)
     };
 }
 
@@ -41,6 +43,7 @@ exports.wrapComment = (requestedComment, requestingUser) => {
         text : requestedComment.text,
         author : requestedComment.author,
         likes : requestedComment.likes,
-        isLiked : requestedComment.isLiked(requestingUser._id)
+        isLiked : requestedComment.isLiked(requestingUser._id),
+        isOwned : requestedComment.isOwned(requestingUser._id)
     };
 }
