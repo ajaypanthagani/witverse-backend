@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 
-const whitelist = ['http://witverseapp.azurewebsites.net', 'https://witverseapp.azurewebsites.net', 'http://ajaypanthagani.me', 'https://ajaypanthagani.me', 'https://localhost:4200', 'http://localhost:4200'];
+const whitelist = ['http://witverseapp.azurewebsites.net', 'https://witverseapp.azurewebsites.net', 'http://ajaypanthagani.me', 'https://ajaypanthagani.me', 'http://www.ajaypanthagani.me', 'https://www.ajaypanthagani.me', 'https://localhost:4200', 'http://localhost:4200'];
 
 var corsOptionsDelegate = (req, callback) => {
     var corsOptions;
