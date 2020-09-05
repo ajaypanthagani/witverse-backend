@@ -5,6 +5,8 @@ var authenticate = require('../authenticate');
 var passport = require('passport');
 var User = require('../models/users');
 var response = require('../response');
+var genPass = require('generate-password');
+const nodemailer = require("nodemailer");
 
 
 /*CRUD routes*/
@@ -36,7 +38,7 @@ router.route('/')
 
   const userData = req.body;
   
-  if(userData.username && userData.password && userData.firstname && userData.lastname){
+  if(userData.username && userData.firstname && userData.lastname){
 
     //check for duplicate username
     User.findOne({'username' : userData.username})
@@ -52,16 +54,22 @@ router.route('/')
         }
         else{
 
+          const randPass = genPass.generate({
+            length : 5,
+            numbers : true
+          });
+
           //registering user
           User.register( new User(
             {
               username : userData.username, 
               firstname : userData.firstname, 
-              lastname : userData.lastname
+              lastname : userData.lastname,
+              email : userData.email
             }
           ),
            
-            userData.password, (error, user) => {
+            randPass, (error, user) => {
 
             if(error){
 
@@ -79,13 +87,53 @@ router.route('/')
                 }
                 else{
 
-                  passport.authenticate('local')(req, res, () => {
+                  let transporter = nodemailer.createTransport({
+                    host: process.env.MAIL_HOST,
+                    port: process.env.MAIL_PORT,
+                    secure: false, // true for 465, false for other ports
+                    auth: {
+                      user: process.env.MAIL_USERNAME, // generated ethereal user
+                      pass: process.env.MAIL_PASSWORD // generated ethereal password
+                    },
+                    tls: {
+                      rejectUnauthorized: false
+                    }
+                  });
 
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
+                  const mailBody = 
+                  `<h1>Welcome to Witverse!</h1>
+                  <h4>we are happy to have you here</h4>
+                  <p>Your temporary password is <strong> ${randPass} </strong> </p>
+                  <ul>
+                    <li> <strong>step 1</strong> : Login with your temporary password</li>
+                    <li> <strong>step 2</strong> : Change your password in profile section</li>
+                    <li> <strong>step 3</strong> : Enjoy using Witverse</li>
+                  </ul>
+                  <small>All rights reserved Witverse 2020 - Developed by Ajay Panthagani</small>`
+
+                  // send mail with defined transport object
+                  transporter.sendMail(
+                    {
+                    from: '"witverse" <admin@ajaypanthagani.me>', // sender address
+                    to: user.email, // list of receivers
+                    subject: "Temporary password for Witverse account", // Subject line
+                    text: randPass, // plain text body
+                    html: mailBody, // html body
+                  },
+                  (error, info) => {
+
+                    if(error){
+
+                      return next(error);
+
+                    }
+
+                    
                     res.json({success: true, status: 'Registered successfully'});
 
-                  });
+                  } );
+
+
                 }
               })
             }
