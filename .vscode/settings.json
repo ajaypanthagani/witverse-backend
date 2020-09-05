@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/85edc073-644a-4749-a559-8bb07704d3ab/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/witverse",
+    "appService.deploySubpath": "."
+}
