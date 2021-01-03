@@ -1,21 +1,29 @@
+/*
+this file deals with the authentication functionality of the app.
+*/
+
+
+/*importing required modules*/
+
 const passport = require('passport');
 const LocalStrategy= require('passport-local');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const jwt = require('jsonwebtoken');
-
 const User = require('./models/users');
 const config = require('./config.js');
 
+/*setting up local authentication strategy and exporting it as 'local'*/
+
 exports.local = passport.use(new LocalStrategy(User.authenticate()));
+
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
 exports.getToken = function(user) {
-    return jwt.sign(user, config.SECRET_KEY,
-        {expiresIn: "7d"});
+    return jwt.sign(user, config.SECRET_KEY, {expiresIn: "7d"});
 };
 
 var opts = {};

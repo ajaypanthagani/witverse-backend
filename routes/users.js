@@ -1,12 +1,16 @@
-var express = require('express');
-var router = express.Router();
-var cors = require('./cors');
-var authenticate = require('../authenticate');
-var passport = require('passport');
-var User = require('../models/users');
-var response = require('../response');
-var genPass = require('generate-password');
+const express = require('express');
+const router = express.Router();
+const cors = require('./cors');
+const authenticate = require('../authenticate');
+const passport = require('passport');
+const User = require('../models/users');
+const response = require('../response');
+const genPass = require('generate-password');
 const nodemailer = require("nodemailer");
+const config = require('../config');
+const mailConfig = require('../mail-config');
+
+
 
 
 /*CRUD routes*/
@@ -88,38 +92,21 @@ router.route('/')
                 else{
 
                   let transporter = nodemailer.createTransport({
-                    host: process.env.MAIL_HOST,
-                    port: process.env.MAIL_PORT,
+                    host: config.MAIL_HOST,
+                    port: config.MAIL_PORT,
                     secure: false, // true for 465, false for other ports
                     auth: {
-                      user: process.env.MAIL_USERNAME, // generated ethereal user
-                      pass: process.env.MAIL_PASSWORD // generated ethereal password
+                      user: config.MAIL_USERNAME, // username for mail
+                      pass: config.MAIL_PASSWORD // username for password
                     },
                     tls: {
                       rejectUnauthorized: false
                     }
                   });
 
-                  const mailBody = 
-                  `<h1>Welcome to Witverse!</h1>
-                  <h4>we are happy to have you here</h4>
-                  <p>Your temporary password is <strong> ${randPass} </strong> </p>
-                  <ul>
-                    <li> <strong>step 1</strong> : Login with your temporary password</li>
-                    <li> <strong>step 2</strong> : Change your password in profile section</li>
-                    <li> <strong>step 3</strong> : Enjoy using Witverse</li>
-                  </ul>
-                  <small>All rights reserved Witverse 2020 - Developed by Ajay Panthagani</small>`
-
                   // send mail with defined transport object
                   transporter.sendMail(
-                    {
-                    from: '"witverse" <admin@ajaypanthagani.me>', // sender address
-                    to: user.email, // list of receivers
-                    subject: "Temporary password for Witverse account", // Subject line
-                    text: randPass, // plain text body
-                    html: mailBody, // html body
-                  },
+                  mailConfig.mailEnvelope('WELCOME', 'New Password | Welcome to Witverse', {toEmail : user.email, randPass : randPass}),
                   (error, info) => {
 
                     if(error){

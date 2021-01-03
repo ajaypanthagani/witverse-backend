@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const config = require('../config');
 
-const whitelist = ['http://witverseapp.azurewebsites.net', 'https://witverseapp.azurewebsites.net', 'http://ajaypanthagani.me', 'https://ajaypanthagani.me', 'http://www.ajaypanthagani.me', 'https://www.ajaypanthagani.me', 'https://localhost:4200', 'http://localhost:4200'];
+const whitelist = config.WHITE_LIST_IP;
 
 var corsOptionsDelegate = (req, callback) => {
     var corsOptions;

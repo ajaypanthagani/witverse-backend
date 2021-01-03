@@ -1,14 +1,16 @@
+/*importing required modules*/
+
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var config = require('./config');
-
 var mongoose = require('mongoose');
 var passport = require('passport');
+var config = require('./config');
 
-/*routers*/
+/*importing routers*/
+
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
 var uploadRouter = require('./routes/upload');
@@ -21,6 +23,7 @@ var infiniteRouter = require('./routes/infinite');
 var searchRouter = require('./routes/search');
 
 /*connecting database*/
+
 mongoose.connect(config.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(
   (database)=>{
@@ -38,10 +41,15 @@ mongoose.connect(config.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: t
   }
 )
 
+//creating Express app
+
 var app = express();
 
 //initializing passport
+
 app.use(passport.initialize());
+
+//setting up middlewares for use
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -49,7 +57,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+//setting up routes for use
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/upload', uploadRouter);
