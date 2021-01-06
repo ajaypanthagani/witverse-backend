@@ -1,4 +1,4 @@
-# Witverse Backend
+# Witverse Backend [![Build Status](https://dev.azure.com/ajaypanthagani0339/witverse/_apis/build/status/witverse%20-%201%20-%20CI?branchName=master&jobName=Build)](https://dev.azure.com/ajaypanthagani0339/witverse/_build/latest?definitionId=1&branchName=master)
 > Server side code for a social media platform called witverse that lets users write quotes.
 
 # Motivation
