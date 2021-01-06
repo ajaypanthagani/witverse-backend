@@ -1,6 +1,10 @@
+/*import required modules*/
 const mongoose = require('mongoose');
+
+/*declaring a schema variable*/
 const Schema = mongoose.Schema;
 
+/*Defining schema for Comment*/
 const Comment = new Schema({
 
     text : {
@@ -23,7 +27,7 @@ const Comment = new Schema({
     }
 })
 
-//like method for commment
+/*like function for Comment*/
 Comment.methods.like = function(userId, parent){
 
     if( this.likes.indexOf(userId) === -1 ){
@@ -35,7 +39,7 @@ Comment.methods.like = function(userId, parent){
     return parent.save();
 }
 
-//unlike method for comment
+/*unlike function for Comment*/
 Comment.methods.unlike = function(userId, parent){
 
     this.likes.remove(userId);
@@ -43,7 +47,7 @@ Comment.methods.unlike = function(userId, parent){
     return parent.save();
 }
 
-//method to check if the comment is already liked or not
+/*function to check if the Comment is already liked or not by a specific user*/
 Comment.methods.isLiked = function(userId){
 
     return this.likes.some(function(followId){
@@ -53,12 +57,13 @@ Comment.methods.isLiked = function(userId){
     });
 }
 
+/*function to check if the Comment is authored by a specific user or not*/
 Comment.methods.isOwned = function(userId){
 
     return this.author.equals(userId);
 }
 
-//quote schema
+/*Defining Schema for Quote*/
 const Quote = new Schema({
 
     text : {
@@ -91,7 +96,7 @@ const Quote = new Schema({
     comments : [Comment]
 });
 
-//like method for quote
+/*like function for Quote*/
 Quote.methods.like = function(userId){
 
     if( this.likes.indexOf(userId) === -1 ){
@@ -103,7 +108,7 @@ Quote.methods.like = function(userId){
     return this.save();
 }
 
-//unlike method for quote
+/*unlike function for Quote*/
 Quote.methods.unlike = function(userId){
 
     this.likes.remove(userId);
@@ -112,7 +117,7 @@ Quote.methods.unlike = function(userId){
 }
 
 
-//method to check if the quote is already liked or not
+/*function to check if the Quote is already liked or not by a specific user*/
 Quote.methods.isLiked = function(userId){
 
     return this.likes.some(function(followId){
@@ -122,14 +127,17 @@ Quote.methods.isLiked = function(userId){
     });
 }
 
+/*function to check if the Comment is authored by a specific user*/
 Quote.methods.isOwned = function(userId){
 
     return this.author._id.toString() === userId.toString();
 }
 
-
+/*creating index for all the String type fields for searching using wildcard specifier*/
 Quote.index({'$**': 'text'});
 
+/*creating a model with the defined schema*/
 const quoteModel = mongoose.model('Quote', Quote);
 
+/*exporting the model*/
 module.exports = quoteModel;

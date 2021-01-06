@@ -41,23 +41,21 @@ mongoose.connect(config.MONGO_URL, {useNewUrlParser: true, useUnifiedTopology: t
   }
 )
 
-//creating Express app
-
+/*creating Express app*/
 var app = express();
 
-//initializing passport
-
+/*initializing passport*/
 app.use(passport.initialize());
 
-//setting up middlewares for use
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+/*setting up middlewares for use*/
+app.use(logger('dev')); //logger is a middleware to log the processes to the console
+app.use(express.json()); //json middleware parses incoming requests with json payloads
+app.use(express.urlencoded({ extended: false })); //urlencoded middleware parses incoming requests with urlencoded payloads
+app.use(cookieParser()); //parses cookie header and populates req.cookies
+app.use(express.static(path.join(__dirname, 'public'))); //static middleware helps serve static files and assets in a specified directory
 
-//setting up routes for use
+/*setting up routes for use*/
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/upload', uploadRouter);
@@ -69,22 +67,23 @@ app.use('/guest', guestRouter);
 app.use('/infinite', infiniteRouter);
 app.use('/search', searchRouter);
 
-// catch 404 and forward to error handler
+/* catch 404 and forward to error handler*/
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// error handler
+/* error handler*/
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
+  // respond with an error status
   res.status(err.status || 500);
   res.json({
     message : err.message
   });
 });
 
+/*export app*/
 module.exports = app;

@@ -1,8 +1,11 @@
+/*importing required modules*/
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const LocalMongoose = require('passport-local-mongoose');
 
+/*declaring a Schema variable*/
+const Schema = mongoose.Schema;
 
+/*Defining a Schema for User*/
 const User = new Schema({
 
     email : {
@@ -57,7 +60,7 @@ const User = new Schema({
 });
 
 
-//follow method for User
+/*function to follow the User*/
 User.methods.follow = function(id){
 
     if( this.following.indexOf(id) === -1 ){
@@ -70,7 +73,7 @@ User.methods.follow = function(id){
 }
 
 
-//unfollow method for user
+/*function to unfollow the User*/
 User.methods.unfollow = function(id){
 
     this.following.remove(id);
@@ -79,7 +82,7 @@ User.methods.unfollow = function(id){
 }
 
 
-//check if the user is already followed or not
+/*Check if the user is following some other user*/
 User.methods.isFollowing = function(id){
 
     return this.following.some(function(followId){
@@ -90,7 +93,7 @@ User.methods.isFollowing = function(id){
 }
 
 
-//method to add a follower
+/*function to add follower*/
 User.methods.addFollower = function(id){
 
     if( this.followers.indexOf(id) === -1 ){
@@ -103,7 +106,7 @@ User.methods.addFollower = function(id){
 
 }
 
-//method to remove a follower
+/* function to remove a follower*/
 User.methods.removeFollower = function(id){
 
     this.followers.remove(id);
@@ -111,7 +114,7 @@ User.methods.removeFollower = function(id){
     return this.save();
 }
 
-//method to add a quote to saved array
+/* function to add a quote to saved array*/
 User.methods.saveQuote = function(id){
 
     if( this.saved.indexOf(id) === -1 ){
@@ -124,7 +127,7 @@ User.methods.saveQuote = function(id){
 
 }
 
-//method to remove a quote from saved array
+/* function to remove a quote from saved array*/
 User.methods.unsaveQuote = function(id){
 
     this.saved.remove(id);
@@ -132,7 +135,7 @@ User.methods.unsaveQuote = function(id){
     return this.save();
 }
 
-//method to check if the quote is already saved or not
+/* function to check if the quote is already saved or not*/
 User.methods.isSaved = function(id){
 
     return this.saved.some(function(savedId){
@@ -142,15 +145,19 @@ User.methods.isSaved = function(id){
     });
 }
 
+/*function to check if the user id is same as the id of the current user*/
 User.methods.isMe = function(userId){
 
     return this._id.equals(userId);
 }
 
+/*applying LocalMongoose plugin to User schema*/
 User.plugin(LocalMongoose);
 
+/*creating index for all the String fields for search using wildcard specifier*/
 User.index({'$**': 'text'});
 
+/*creating a model with the defined Schema*/
 const userModel = mongoose.model('User', User);
 
 module.exports = userModel;

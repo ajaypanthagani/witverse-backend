@@ -1,5 +1,6 @@
-//wrapper for different types of responses
+/*this file contains wrapper functions that format the provided data into required format of json object*/
 
+/*function that formats user object for response*/
 exports.wrapUser = (requestedUser, requestingUser) => {
 
     return {
@@ -18,6 +19,7 @@ exports.wrapUser = (requestedUser, requestingUser) => {
     };
 }
 
+/*function that formats quote object for response*/
 exports.wrapQuote = (requestedQuote, requestingUser) => {
 
     return {
@@ -35,6 +37,7 @@ exports.wrapQuote = (requestedQuote, requestingUser) => {
     };
 }
 
+/*function that formats comment object for response*/
 exports.wrapComment = (requestedComment, requestingUser) => {
 
     return {

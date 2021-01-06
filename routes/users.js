@@ -1,3 +1,5 @@
+/*importing all the required modules*/
+
 const express = require('express');
 const router = express.Router();
 const cors = require('./cors');
@@ -15,15 +17,17 @@ const mailConfig = require('../mail-config');
 
 /*CRUD routes*/
 
-//grouped resource
+/*route that handles all the requests for the 'user/' resource*/
 router.route('/')
 .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
 .get(cors.cors, authenticate.verifyUser, (req, res, next)=>{
   
+  //route returns all the users
   User.find({})
   .then(
     (users) => {
 
+      //wrapping all the db responses to match the formatting required
       users = users.map((user) => response.wrapUser(user, req.user));
 
       return res.status(200).json(users);
@@ -40,6 +44,7 @@ router.route('/')
 })
 .post(cors.corsWithOptions, (req,res,next)=>{
 
+  //this route creates an instance of a new user in the database, register function
   const userData = req.body;
   
   if(userData.username && userData.firstname && userData.lastname){
@@ -91,18 +96,8 @@ router.route('/')
                 }
                 else{
 
-                  let transporter = nodemailer.createTransport({
-                    host: config.MAIL_HOST,
-                    port: config.MAIL_PORT,
-                    secure: false, // true for 465, false for other ports
-                    auth: {
-                      user: config.MAIL_USERNAME, // username for mail
-                      pass: config.MAIL_PASSWORD // username for password
-                    },
-                    tls: {
-                      rejectUnauthorized: false
-                    }
-                  });
+                  //importing mail transporter from mailConfig
+                  let transporter = mailConfig.transporter;
 
                   // send mail with defined transport object
                   transporter.sendMail(
@@ -156,6 +151,7 @@ router.route('/')
 })
 .delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next)=>{
 
+  //this route deletes all the user resources, authorized only for user with admin privelege
   User.deleteMany({})
   .then(
     (op) => {
@@ -174,11 +170,12 @@ router.route('/')
   )
 });
 
-//single resource
+/*route that handles all the requests for the 'user/id' resource, single user*/
 router.route('/:id')
 .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
 .get(cors.cors, authenticate.verifyUser, (req, res, next)=>{
 
+  // route returns requested user based on ID supplied
   const id = req.params.id;
 
   User.findById(id)
@@ -220,6 +217,7 @@ router.route('/:id')
 })
 .put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next)=>{
 
+  // route updates the user with provided ID
   const id = req.params.id;
   const userId = req.user._id.toString();
 
@@ -310,6 +308,7 @@ router.route('/:id')
 })
 .delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next)=>{
 
+  // route deletes the user with provided ID
   const id = req.params.id;
   const userId = req.user._id.toString()
 
@@ -342,6 +341,7 @@ router.route('/:id')
   
 });
 
+/*route that provides random set of users used for friend suggestions*/
 router.route('/random/:size')
 .options(cors.corsWithOptions, (req, res)=>res.sendStatus(200))
 .get(cors.cors, authenticate.verifyUser, async (req, res, next)=>{

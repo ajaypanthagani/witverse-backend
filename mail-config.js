@@ -1,4 +1,19 @@
 const config = require('./config');
+const nodemailer = require('nodemailer');
+
+/*nodemailer transporter configuration*/
+exports.transporter = nodemailer.createTransport({
+    host: config.MAIL_HOST,
+    port: config.MAIL_PORT,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: config.MAIL_USERNAME, // username for mail
+      pass: config.MAIL_PASSWORD // username for password
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+});
 
 /*add all the necessary mail bodies here*/
 var mailBodies = {

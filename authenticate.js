@@ -17,19 +17,21 @@ const config = require('./config.js');
 
 exports.local = passport.use(new LocalStrategy(User.authenticate()));
 
-
+/*serialize user into session and deserialize user from session*/
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-
+/*function to create a JSON web token*/
 exports.getToken = function(user) {
     return jwt.sign(user, config.SECRET_KEY, {expiresIn: "7d"});
 };
 
+/*creating options variable for jwt authentication*/
 var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = config.SECRET_KEY;
 
+/*setting up a JSON web token based authentication strategy*/
 exports.jwtPassport = passport.use(new JwtStrategy(opts,
     (jwt_payload, done) => {
         // console.log("JWT payload: ", jwt_payload);
@@ -48,6 +50,7 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
 
+/*verify admin level access, authorization*/
 exports.verifyAdmin = (req,res, next)=>{
     const user = req.user;
     if(user.admin){

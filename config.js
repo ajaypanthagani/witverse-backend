@@ -1,3 +1,7 @@
+/*
+this file exports all the environment variables for use in the application
+*/
+
 const dotenv  = require('dotenv').config();
 
 module.exports = {
