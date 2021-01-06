@@ -128,11 +128,24 @@ router.route('/:id')
         //find quote with given id and populate author
         let quote = await Quote.findById(id).populate('author');
 
-        //wrap the quote into a json object of required formatting
-        quote = response.wrapQuote(quote, req.user);
+        //if quote is not null
+        if(quote){
 
-        //respond with quote with success status
-        res.status(200).json(quote);
+            //wrap the quote into a json object of required formatting
+            quote = response.wrapQuote(quote, req.user);
+
+            //respond with quote with success status
+            res.status(200).json(quote);
+        }
+        else{ //if quote is null
+
+            //create error
+            const error = new Error(`quote with id ${id} doesn't exist`);
+            error.status = 404;
+
+            //pass the error to next method (error handler)
+            return next(error);
+        }
 
     } catch (error) { //catch any error
         
