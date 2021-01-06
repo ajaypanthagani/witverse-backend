@@ -180,3 +180,7 @@ witverse-express
 └─ LICENSE
 
 ```
+
+# License
+
+This project is open-sourced under MIT Licence. Read the LICENSE file for more information.
