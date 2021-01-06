@@ -131,7 +131,14 @@ Example
 ```
     WHITE_LIST = http://xyz.com https://xyz.com //white listed IPs for cross origing resource sharing
 ```
+# Running project locally
 
+run the following command
+
+```
+npm run dev
+
+```
 # Project Structure
 
 ```
@@ -170,5 +177,6 @@ witverse-express
 │  ├─ upload.js
 │  └─ users.js
 └─ web.config
+└─ LICENSE
 
 ```
