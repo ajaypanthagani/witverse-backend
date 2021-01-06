@@ -132,4 +132,43 @@ Example
     WHITE_LIST = http://xyz.com https://xyz.com //white listed IPs for cross origing resource sharing
 ```
 
-# API Reference
+# Project Structure
+
+```
+witverse-express
+├─ .gitignore
+├─ .vscode
+│  └─ settings.json
+├─ app.js
+├─ authenticate.js
+├─ bin
+│  └─ www
+├─ config.js
+├─ mail-config.js
+├─ models
+│  ├─ quotes.js
+│  └─ users.js
+├─ package-lock.json
+├─ package.json
+├─ public
+│  └─ images
+│     ├─ .gitignore
+│     └─ profile
+│        ├─ .gitkeep
+├─ README.md
+├─ response.js
+├─ routes
+│  ├─ actions.js
+│  ├─ auth.js
+│  ├─ comments.js
+│  ├─ connections.js
+│  ├─ cors.js
+│  ├─ guest.js
+│  ├─ infinite.js
+│  ├─ quotes.js
+│  ├─ search.js
+│  ├─ upload.js
+│  └─ users.js
+└─ web.config
+
+```
