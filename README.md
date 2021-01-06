@@ -5,6 +5,16 @@
 
 This project is a result of a simple idea of allowing users write quotes on a bigger platform and a larger audience. Many people have a knack for writing short quotes inspired from day to day incidents. Witverse is a social media platform that lets users write quotes. This repository contains the server side (REST API) for the web app.
 
+# Deployment Links
+
+The project is deployed to Microsoft Azure as a webservice. The url exposes various protected and uprotected routes.
+
+http://witverse.azurewebsites.net/
+
+Test the below route :
+
+http://witverse.azurewebsites.net/guest/quotes
+
 # TechStack / Frameworks used
 
 #### Built with
