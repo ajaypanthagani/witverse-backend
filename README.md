@@ -1,4 +1,4 @@
-# Witverse Backend [![Build Status](https://dev.azure.com/ajaypanthagani0339/witverse/_apis/build/status/witverse%20-%201%20-%20CI?branchName=master&jobName=Build)](https://dev.azure.com/ajaypanthagani0339/witverse/_build/latest?definitionId=1&branchName=master)
+# Witverse Backend
 > Server side code for a social media platform called witverse that lets users write quotes.
 
 # Motivation
@@ -6,6 +6,9 @@
 This project is a result of a simple idea of allowing users write quotes on a bigger platform and a larger audience. Many people have a knack for writing short quotes inspired from day to day incidents. Witverse is a social media platform that lets users write quotes. This repository contains the server side (REST API) for the web app.
 
 # Deployment Links
+
+#### Build Status
+[![Build Status](https://dev.azure.com/ajaypanthagani0339/witverse/_apis/build/status/witverse%20-%201%20-%20CI?branchName=master&jobName=Build)](https://dev.azure.com/ajaypanthagani0339/witverse/_build/latest?definitionId=1&branchName=master)
 
 The project is deployed to Microsoft Azure as a webservice. The url exposes various protected and uprotected routes.
 
