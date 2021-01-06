@@ -6,6 +6,9 @@
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www"
   },
+  "keywords": ["witverse", "backend"],
+  "author": "ajaypanthagani",
+  "license": "MIT",
   "engines": {
     "node": "12.x"
   },
