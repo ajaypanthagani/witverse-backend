@@ -142,7 +142,7 @@ Example
 
 Example
 ```
-    WHITE_LIST = http://xyz.com https://xyz.com //white listed IPs for cross origing resource sharing
+    WHITE_LIST_IP = http://xyz.com https://xyz.com //white listed IPs for cross origing resource sharing
 ```
 # Running project locally
 
