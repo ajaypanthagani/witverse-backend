@@ -78,14 +78,14 @@ Create .env file in the root folder (witverse-express) of the project. Add the b
 
 Example:
 ```
-    APPLICATION_NAME = Witverse //determines the application name
+    APPLICATION_NAME = Witverse
 ```
 
 * BASE_URL
 
 Example:
 ```
-    BASE_URL = http://xyz.com //determines the base url of application
+    BASE_URL = http://xyz.com
 ```
 
 * MONGO_URL
@@ -94,55 +94,55 @@ Setup a MongoDB database in [atlas](https://www.mongodb.com/cloud/atlas) or any 
 
 Example:
 ```
-    MONGO_URL = mongodb.url.connection.string //used for connecting to mongodb
+    MONGO_URL = mongodb.url.connection.string
 ```
 
 * SECRET_KEY
 
 Example:
 ```
-    SECRET_KEY = 1234-4563-546345-234 //some random number, used for signing jwt tokens
+    SECRET_KEY = 1234-4563-546345-234
 ```
 * MAIL_HOST
 
 Example
 ```
-    MAIL_HOST = smtp.dummy.com //mail host for smtp server
+    MAIL_HOST = smtp.dummy.com
 ```
 
 * MAIL_PORT
 
 Example
 ```
-    MAIL_PORT = 5000 //mail port for smpt server
+    MAIL_PORT = 5000
 ```
 
 * MAIL_ID
 
 Example
 ```
-    MAIL_ID = abc@xyz.com //email id
+    MAIL_ID = abc@xyz.com
 ```
 
 * MAIL_USERNAME
 
 Example
 ```
-    MAIL_USERNAME = username //mail username for mail server
+    MAIL_USERNAME = username
 ```
 
 * MAIL_PASSWORD
 
 Example
 ```
-    MAIL_PASSWORD = password //mail password for mail server
+    MAIL_PASSWORD = password 
 ```
 
 * WHITE_LIST_IP
 
 Example
 ```
-    WHITE_LIST_IP = http://xyz.com https://xyz.com //white listed IPs for cross origing resource sharing
+    WHITE_LIST_IP = http://xyz.com https://xyz.com
 ```
 # Running project locally
 
