@@ -47,7 +47,7 @@ router.route('/')
   //this route creates an instance of a new user in the database, register function
   const userData = req.body;
   
-  if(userData.username && userData.firstname && userData.lastname){
+  if(userData.username && userData.firstname && userData.lastname && userData.email){
 
     //check for duplicate username
     User.findOne({'username' : userData.username})
