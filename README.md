@@ -12,6 +12,11 @@ This project is a result of a simple idea of allowing users write quotes on a bi
 
 The project is deployed to Microsoft Azure as a webservice. The url exposes various protected and uprotected routes.
 
+## Full Stack App Link : https://witverse-frontend.azurewebsites.net/
+## Test Credentials
+### username : ajaypanthagani2
+### password : wdbgh
+
 http://witverse.azurewebsites.net/
 
 Test the below route :
