@@ -2,6 +2,7 @@
 
 var createError = require('http-errors');
 var express = require('express');
+const session = require('express-session');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
@@ -51,6 +52,12 @@ app.use(passport.initialize());
 /*setting up middlewares for use*/
 app.use(logger('dev')); //logger is a middleware to log the processes to the console
 app.use(express.json()); //json middleware parses incoming requests with json payloads
+app.use(session({
+  secret: 'your-secret-key',           // use env variable in real apps
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }            // set to true in production with HTTPS
+}));
 app.use(express.urlencoded({ extended: false })); //urlencoded middleware parses incoming requests with urlencoded payloads
 app.use(cookieParser()); //parses cookie header and populates req.cookies
 app.use(express.static(path.join(__dirname, 'public'))); //static middleware helps serve static files and assets in a specified directory
